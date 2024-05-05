@@ -4,17 +4,23 @@ const mongoose = require('mongoose')
 const artRoutes = require('./routes/ArticulosRoutes')
 const ArticuloModel = require('./models/product')
 const cors = require('cors');
-/*
-app.use(cors({
-    origin: 'http://localhost:3000'
-}));
-*/
+
+
+
 const app = express()
 
 //Middlewares
 app.use(express.urlencoded({extended: true}))
 /*Express.urlencoded: Funcionalidad para almacenar datos a través de key:value y no JSON. */
 app.use(express.json())
+
+//CORS - Permite HTTP desde diferentes orígenes
+whiteList = [
+    'http://localhost:3001', 
+    'http://http://192.168.0.174:3001'
+]
+
+app.use(cors(whiteList));
 
 //Routes
 app.use('/articulos', artRoutes)
@@ -23,7 +29,8 @@ app.use('/articulos', artRoutes)
 app.get("/", (req, res)=>{
     res.sendFile(path.join(__dirname + "/index.html"));
 })
-¨/
+*/
+
 /*TODO: Sobreescribir métodos en el Route para ordenar el Index */
 //Método Get para obtener todos los articulos
 app.get('/articulos', async (req, res) => {
@@ -69,9 +76,13 @@ mongoose.connect('mongodb://localhost:27017/Supermercado')
     .then(() => {
         console.log("Conexión a la BD exitosa");
         //Inicialización del server
-    app.listen(3000, ()=>{
-        console.log(`Server funcionando correctamente en puerto: `, 3000)
-    })
+        /*
+        app.listen(3000, ()=>{
+            console.log(`Server funcionando correctamente en puerto: `, 3000)
+        })*/
+        app.listen(3000, function () {
+            console.log('CORS-enabled web server listening on port 3000')
+          })
     })
     .catch((error) => {
         console.error("Error al conectar a la BD:", error);
@@ -79,7 +90,9 @@ mongoose.connect('mongodb://localhost:27017/Supermercado')
     });
 
 
+    
 
+    app.get('/articulos', function (req, res, next) {
+        res.json({msg: 'This is CORS-enabled for all origins!'})
+      })
 
-
-    //TODO: AGREGAR README
